@@ -10,7 +10,9 @@ export class GalaxyController extends BaseController {
       .get('', this.getGalaxy)
       .put('/:galaxyId', this.editGalaxy)
       .get('/:galaxyId/planets', this.getPlanetsbyGalaxyId)
+      .delete('/:galaxyId', this.deleteGalaxy)
   }
+
 
 
   async createGalaxy(request, response, next) {
@@ -48,6 +50,15 @@ export class GalaxyController extends BaseController {
       const galaxyId = request.params.galaxyId
       const planets = await planetsService.getPlanetsByGalaxyId(galaxyId)
       response.send(planets)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async deleteGalaxy(request, response, next) {
+    try {
+      const message = await galaxyService.deleteGalaxy(request.params.galaxyId)
+      response.send(message)
     } catch (error) {
       next(error)
     }

@@ -1,6 +1,8 @@
 import { dbContext } from "../db/DbContext.js"
+import { BadRequest } from "../utils/Errors.js"
 
 class GalaxyService {
+
 
   async createGalaxy(body) {
     const newGalaxy = await dbContext.Galaxy.create(body)
@@ -20,6 +22,15 @@ class GalaxyService {
     originalGalaxy.age = updates.age != undefined ? updates.age : originalGalaxy.age
     await originalGalaxy.save()
     return originalGalaxy
+  }
+
+  async deleteGalaxy(galaxyId) {
+    const galaxyToRemove = await dbContext.Galaxy.findById(galaxyId)
+    if (!galaxyToRemove) {
+      throw new BadRequest('no galaxy with id: ' + galaxyId)
+    }
+    await galaxyToRemove.remove()
+    return `removed the galaxy: ${galaxyToRemove.name}`
   }
 
 }
